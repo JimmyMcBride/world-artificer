@@ -1,0 +1,63 @@
+# Node.js
+node_modules/
+pnpm-lock.yaml
+*.log
+*.tsbuildinfo
+.cache/
+
+# Environment variables
+.env*
+!.env.example
+
+# Next.js
+.next/
+out/
+
+# Turborepo
+turbo/
+
+# Vercel
+.vercel/
+
+# Logs
+logs/
+*.log
+
+# Editor settings
+.vscode/
+.idea/
+*.sw?
+
+# Prisma
+prisma/migrations/
+prisma/dev.db
+prisma/test.db
+
+# Test coverage and output
+coverage/
+*.lcov
+.vitest/
+jest-*.json
+playwright-report/
+test-results/
+
+# Redis / Postgres (if used via Docker volumes or manually)
+dump.rdb
+*.sql
+
+# Docker-related
+*.pid
+
+# Build outputs
+dist/
+build/
+
+# AWS CDK
+cdk.out/
+
+# Misc
+.DS_Store
+Thumbs.db
+*.bak
+*.tmp
+*.swp
