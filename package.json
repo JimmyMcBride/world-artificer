@@ -1,0 +1,42 @@
+{
+  "name": "world-artificer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI-powered worldbuilding assistant that builds creative confidence and prevents creative paralysis",
+  "keywords": [
+    "worldbuilding",
+    "ai",
+    "creative-writing",
+    "storytelling",
+    "monorepo"
+  ],
+  "author": "Jimmy McBride",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
+    "type-check": "turbo run type-check",
+    "test": "turbo run test",
+    "test:watch": "turbo run test:watch",
+    "clean": "turbo run clean",
+    "reset": "pnpm clean && rm -rf node_modules && rm -rf packages/*/node_modules && pnpm install"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "eslint": "^8.55.0",
+    "prettier": "^3.1.0",
+    "turbo": "^1.11.0",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.12.0"
+}

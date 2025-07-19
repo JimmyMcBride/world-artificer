@@ -1,0 +1,195 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User authentication and profile
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String    @map("password_hash")
+  name          String?
+  emailVerified Boolean   @default(false) @map("email_verified")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  sessions      Session[]
+  profile       UserProfile?
+  worlds        World[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model UserProfile {
+  id                      String                 @id @default(cuid())
+  userId                  String                 @unique @map("user_id")
+  experienceLevel         ExperienceLevel        @default(BEGINNER) @map("experience_level")
+  preferredGenres         String[]               @map("preferred_genres")
+  communicationStyle      CommunicationStyle     @default(ENCOURAGING) @map("communication_style")
+  notificationPreferences NotificationPreferences?
+  createdAt               DateTime               @default(now()) @map("created_at")
+  updatedAt               DateTime               @updatedAt @map("updated_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+// World building entities
+model World {
+  id              String    @id @default(cuid())
+  userId          String    @map("user_id")
+  title           String
+  description     String?
+  genre           String?
+  status          WorldStatus @default(ACTIVE)
+  confidenceScore Float?    @map("confidence_score")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  entities         WorldEntity[]
+  content          WorldContent[]
+  relationships    EntityRelationship[] @relation("WorldRelationships")
+
+  @@map("worlds")
+}
+
+model WorldEntity {
+  id            String     @id @default(cuid())
+  worldId       String     @map("world_id")
+  entityType    EntityType @map("entity_type")
+  name          String
+  description   String?
+  content       Json?      // Flexible JSONB content
+  embeddingId   String?    @map("embedding_id") // Pinecone vector ID
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+
+  // Relations
+  world                World               @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  sourceRelationships  EntityRelationship[] @relation("SourceEntity")
+  targetRelationships  EntityRelationship[] @relation("TargetEntity")
+
+  @@map("world_entities")
+}
+
+model EntityRelationship {
+  id               String   @id @default(cuid())
+  sourceEntityId   String   @map("source_entity_id")
+  targetEntityId   String   @map("target_entity_id")
+  worldId          String   @map("world_id")
+  relationshipType String   @map("relationship_type")
+  strength         Float?   // 0.0-1.0
+  description      String?
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  // Relations
+  sourceEntity WorldEntity @relation("SourceEntity", fields: [sourceEntityId], references: [id], onDelete: Cascade)
+  targetEntity WorldEntity @relation("TargetEntity", fields: [targetEntityId], references: [id], onDelete: Cascade)
+  world        World       @relation("WorldRelationships", fields: [worldId], references: [id], onDelete: Cascade)
+
+  @@map("entity_relationships")
+}
+
+model WorldContent {
+  id          String      @id @default(cuid())
+  worldId     String      @map("world_id")
+  contentType ContentType @map("content_type")
+  title       String?
+  content     String
+  tags        String[]
+  embeddingId String?     @map("embedding_id") // Pinecone vector ID
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  // Relations
+  world World @relation(fields: [worldId], references: [id], onDelete: Cascade)
+
+  @@map("world_content")
+}
+
+// Enums
+enum ExperienceLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+
+  @@map("experience_level")
+}
+
+enum CommunicationStyle {
+  ENCOURAGING
+  DIRECT
+  DETAILED
+  MINIMAL
+
+  @@map("communication_style")
+}
+
+enum WorldStatus {
+  ACTIVE
+  ARCHIVED
+  COMPLETED
+
+  @@map("world_status")
+}
+
+enum EntityType {
+  CHARACTER
+  LOCATION
+  FACTION
+  EVENT
+  CONCEPT
+  ITEM
+
+  @@map("entity_type")
+}
+
+enum ContentType {
+  NOTE
+  DOCUMENT
+  BRAINDUMP
+  TEMPLATE
+
+  @@map("content_type")
+}
+
+// Notification preferences stored as JSON
+model NotificationPreferences {
+  id               String      @id @default(cuid())
+  userProfileId    String      @unique @map("user_profile_id")
+  userProfile      UserProfile @relation(fields: [userProfileId], references: [id], onDelete: Cascade)
+  interventions    Boolean     @default(true)
+  celebrations     Boolean     @default(true)
+  suggestions      Boolean     @default(true)
+  email            Boolean     @default(false)
+  createdAt        DateTime    @default(now()) @map("created_at")
+  updatedAt        DateTime    @updatedAt @map("updated_at")
+
+  @@map("notification_preferences")
+}

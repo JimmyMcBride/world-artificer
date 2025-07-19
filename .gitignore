@@ -55,6 +55,17 @@ build/
 # AWS CDK
 cdk.out/
 
+# Duplicate/backup files
+package*.json.bak
+*2.json
+
+# Tool caches
+.eslintcache
+.prettier-cache
+
+# TypeScript
+tsconfig.tsbuildinfo
+
 # Misc
 .DS_Store
 Thumbs.db
