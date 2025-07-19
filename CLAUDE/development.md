@@ -84,6 +84,90 @@ SUPABASE_ANON_KEY="your-supabase-anon-key"
 5. **Frontend Integration**: Create components and integrate API
 6. **Testing**: Add unit/integration tests
 7. **Documentation**: Update relevant docs
+8. **🔄 COMMIT CHANGES**: Always commit work after completing todo tasks
+
+## Git Workflow
+
+### Committing Changes (Required After Todo Completion)
+
+**ALWAYS commit your work after finishing any todo list that involves codebase changes:**
+
+```bash
+# 1. Review what changed
+git status                    # See modified/new files
+git diff                      # Review unstaged changes
+git log --oneline -5          # Check recent commit style
+
+# 2. Stage relevant files
+git add <files>              # Add specific files
+# OR
+git add .                    # Add all changes (use carefully)
+
+# 3. Create descriptive commit
+git commit -m "$(cat <<'EOF'
+Brief summary of changes (50 chars or less)
+
+Detailed explanation of what was changed and why:
+- List key modifications
+- New features added
+- Bugs fixed
+- Architecture changes
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+EOF
+)"
+
+# 4. Verify commit succeeded
+git status                   # Should show clean working tree
+```
+
+### Commit Message Guidelines
+
+#### Good Commit Messages
+```bash
+# Feature addition
+"Add world confidence assessment API endpoint
+
+Implement tRPC endpoint for AI-powered world analysis:
+- New assessConfidence procedure with Zod validation
+- Integration with OpenAI service for content analysis
+- Return confidence metrics for story readiness
+- Add proper error handling for AI service failures"
+
+# Bug fix
+"Fix entity relationship query N+1 performance issue
+
+Replace individual entity fetches with single include query:
+- Use Prisma include for targetEntity in relationships
+- Reduces database queries from O(n) to O(1)
+- Improves page load time from 2s to 300ms"
+
+# Refactoring
+"Refactor component props to use consistent patterns
+
+Standardize component interfaces across UI library:
+- Extract common props to BaseComponentProps
+- Apply size/variant patterns consistently
+- Update Button, Input, and Card components
+- Maintain backwards compatibility"
+```
+
+#### Avoid These Patterns
+```bash
+# Too vague
+"Update stuff"
+"Fix bug"
+"WIP"
+
+# Too long (over 50 chars in summary)
+"Add a new feature that allows users to create and manage world entities with relationships"
+
+# Missing context
+"Change database schema"
+"Update API"
+```
 
 ### Code Review Checklist
 - [ ] TypeScript strict mode compliance

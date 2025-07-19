@@ -49,6 +49,34 @@ This development guide is organized into focused modules. Reference the appropri
 
 When working with AI assistants, direct them to the appropriate documentation:
 
+### 📋 **IMPORTANT: Always Commit Changes**
+**After completing any todo list that results in codebase changes, ALWAYS commit your work:**
+
+```bash
+# 1. Check status and review changes
+git status
+git diff
+
+# 2. Stage relevant files
+git add <files>
+
+# 3. Create descriptive commit with Claude attribution
+git commit -m "$(cat <<'EOF'
+Brief description of changes
+
+Detailed explanation of what was changed and why.
+List key modifications, new features, or fixes.
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+EOF
+)"
+
+# 4. Verify commit succeeded
+git status
+```
+
 ### For **Architecture Questions**
 > "Review [architecture.md](./CLAUDE/architecture.md) for tech stack and system design"
 
